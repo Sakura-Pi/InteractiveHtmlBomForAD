@@ -60,6 +60,9 @@ function drawText(ctx, text, color) {
           if (j == txt[i].length)
             break;
         }
+
+        if(pcbdata.font_data[txt[i][j]] == undefined)
+          continue;
         lineWidth += pcbdata.font_data[txt[i][j]].w * text.width;
       }
     }
@@ -94,15 +97,19 @@ function drawText(ctx, text, color) {
       } else {
         lastHadOverbar = false;
       }
-      for (var line of glyph.l) {
-        ctx.beginPath();
-        ctx.moveTo(...calcFontPoint(line[0], text, offsetx, offsety, tilt));
-        for (var k = 1; k < line.length; k++) {
-          ctx.lineTo(...calcFontPoint(line[k], text, offsetx, offsety, tilt));
+
+      if(glyph != undefined) {
+        for (var line of glyph.l) {
+          ctx.beginPath();
+          ctx.moveTo(...calcFontPoint(line[0], text, offsetx, offsety, tilt));
+          for (var k = 1; k < line.length; k++) {
+            ctx.lineTo(...calcFontPoint(line[k], text, offsetx, offsety, tilt));
+          }
+          ctx.stroke();
         }
-        ctx.stroke();
+        offsetx += glyph.w * text.width;
       }
-      offsetx += glyph.w * text.width;
+
     }
     offsety += interline;
   }
@@ -231,9 +238,9 @@ function drawDrawing(ctx, scalefactor, drawing, color) {
     drawedge(ctx, scalefactor, drawing, color);
   } else if (drawing.type == "polygon") {
     drawPolygonShape(ctx, drawing, color);
-  } else {
+  }/* else {
     drawText(ctx, drawing, color);
-  }
+  }*/
 }
 
 function getCirclePath(radius) {
